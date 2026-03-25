@@ -20,6 +20,12 @@ app.use((req, res, next) => {
   console.log("BODY:", req.body);
   next();
 });
+// ✅ 👉 ADD TEST ROUTE HERE
+app.post("/test", (req, res) => {
+  console.log("TEST BODY:", req.body);
+  res.json(req.body);
+});
+
 
 // ROUTES
 app.use("/api/blogs", blogRoutes);

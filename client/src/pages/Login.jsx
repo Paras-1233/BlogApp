@@ -50,10 +50,9 @@ const Login = () => {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://blog-backend-wcnx.onrender.com/api/auth/login",
         form
       );
-
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
 

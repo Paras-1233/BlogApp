@@ -26,13 +26,24 @@ const CreateBlog = () => {
       return;
     }
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in to create a blog.");
+      return;
+    }
+
     try {
       const res = await createBlog(form);
-      console.log("Response:", res.data);
-      alert("Blog created successfully!");
-    } catch (err) {
-      console.error(err);
-    }
+
+  console.log("FULL RESPONSE:", res); // 👈 debug
+  
+
+  if (res && res.data) {
+    alert("Blog created successfully!");
+  }
+} catch (err) {
+  console.error("ERROR:", err.response?.data || err.message);
+}
   };
 
   return (

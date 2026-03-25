@@ -1,17 +1,20 @@
-import axios from "axios";
+import API from "./api";
 
-const API = axios.create({
-  baseURL: "http://localhost:5000/api/blogs",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+// GET all blogs
+export const getBlogs = () => API.get("/blogs");
 
-// ✅ MUST EXPORT THIS
-export const getBlogs = () => API.get("/");
+// CREATE blog
+export const createBlog = (data) => API.post("/blogs", data);
 
-export const createBlog = (data) => API.post("/", data);
+// GET single blog
+export const getBlogById = (id) => API.get(`/blogs/${id}`);
 
-export const getBlogById = (id) => API.get(`/${id}`);
+// UPDATE blog
+export const updateBlog = (id, data) =>
+  API.put(`/blogs/${id}`, data);
 
-export const deleteBlog = (id) => API.delete(`/${id}`);
+// DELETE blog
+export const deleteBlog = (id) => API.delete(`/blogs/${id}`);
+
+// GET logged-in user's blogs
+export const getMyBlogs = () => API.get("/blogs/myblogs");

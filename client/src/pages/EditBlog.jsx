@@ -11,6 +11,7 @@ const EditBlog = () => {
   const [image, setImage] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
 
   // Fetch blog
   useEffect(() => {
@@ -19,9 +20,9 @@ const EditBlog = () => {
         const res = await getBlogById(id);
         const data = res.data;
 
-        setTitle(data.title);
-        setImage(data.image);
-        setContent(data.content);
+        setTitle(data.title || "");
+        setImage(data.image || "");
+        setContent(data.content || "");
       } catch (error) {
         console.error(error);
       } finally {
@@ -35,91 +36,126 @@ const EditBlog = () => {
   // Update blog
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUpdating(true);
 
     try {
       await updateBlog(id, { title, image, content });
-      alert("Blog updated ✅");
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
       alert("Error updating blog ❌");
+    } finally {
+      setUpdating(false);
     }
   };
 
   return (
     <MainLayout>
-      <div className="max-w-3xl mx-auto px-4 py-10">
+      <div className="max-w-4xl mx-auto px-4 py-12">
 
         {/* 🔙 Back */}
         <button
           onClick={() => navigate(-1)}
-          className="text-sm text-gray-500 hover:text-black mb-4"
+          className="text-sm text-gray-500 hover:text-black mb-6"
         >
           ← Back
         </button>
 
-        {/* 🔥 Form Card */}
-        <div className="bg-white/80 backdrop-blur-lg shadow-lg rounded-2xl p-6">
-
-          <h1 className="text-2xl font-bold mb-6">
-            ✏️ Edit Blog
+        {/* 🔥 Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-extrabold text-gray-800">
+            Edit Your Story ✏️
           </h1>
+          <p className="text-gray-500 mt-1">
+            Refine your ideas and make your story better.
+          </p>
+        </div>
+
+        {/* FORM CARD */}
+        <div className="bg-white/80 backdrop-blur-lg shadow-xl rounded-3xl p-8 border border-gray-100">
 
           {loading ? (
             <p className="text-gray-500">Loading blog...</p>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-6">
 
-              {/* Title */}
+              {/* TITLE */}
               <div>
-                <label className="text-sm text-gray-600">Title</label>
+                <label className="text-sm font-medium text-gray-600">
+                  Title
+                </label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="w-full mt-2 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                   placeholder="Enter blog title"
                   required
                 />
               </div>
 
-              {/* Image */}
+              {/* IMAGE */}
               <div>
-                <label className="text-sm text-gray-600">Image URL</label>
+                <label className="text-sm font-medium text-gray-600">
+                  Image URL
+                </label>
                 <input
                   type="text"
                   value={image}
                   onChange={(e) => setImage(e.target.value)}
-                  className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Enter image URL"
+                  className="w-full mt-2 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="Paste image URL"
                 />
+
+                {/* 🖼 LIVE PREVIEW */}
+                {image && (
+                  <img
+                    src={image}
+                    alt="preview"
+                    className="mt-4 w-full h-56 object-cover rounded-xl border"
+                  />
+                )}
               </div>
 
-              {/* Content */}
+              {/* CONTENT */}
               <div>
-                <label className="text-sm text-gray-600">Content</label>
+                <label className="text-sm font-medium text-gray-600">
+                  Content
+                </label>
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  rows="6"
-                  className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  rows="8"
+                  className="w-full mt-2 px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none resize-none"
                   placeholder="Write your blog..."
                   required
                 />
               </div>
 
-              {/* Button */}
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition shadow"
-              >
-                Update Blog
-              </button>
+              {/* ACTION BUTTONS */}
+              <div className="flex gap-4 pt-4">
+
+                <button
+                  type="submit"
+                  disabled={updating}
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-medium shadow-lg hover:scale-[1.02] transition disabled:opacity-70"
+                >
+                  {updating ? "Updating..." : "Update Blog"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate("/dashboard")}
+                  className="px-6 py-3 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
+                >
+                  Cancel
+                </button>
+
+              </div>
 
             </form>
           )}
         </div>
-
       </div>
     </MainLayout>
   );

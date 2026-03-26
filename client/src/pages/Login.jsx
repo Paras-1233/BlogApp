@@ -21,7 +21,6 @@ const Login = () => {
       [e.target.name]: e.target.value,
     }));
 
-    // clear error when typing
     setErrors((prev) => ({
       ...prev,
       [e.target.name]: "",
@@ -50,17 +49,28 @@ const Login = () => {
       setLoading(true);
 
       const res = await axios.post(
-        "https://blog-backend-wcnx.onrender.com/api/auth/login",
+        "http://localhost:5000/api/auth/login",
         form
       );
+
+      console.log("LOGIN RESPONSE:", res.data);
+
       if (res.data?.token) {
+        // ✅ Store token
         localStorage.setItem("token", res.data.token);
 
-        if (res.data.user) {
-          localStorage.setItem("user", JSON.stringify(res.data.user));
-        }
+        // 🔥 FIX: Store user correctly
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            _id: res.data._id,
+            username: res.data.username,
+            email: res.data.email,
+          })
+        );
 
         toast.success("Login successful 🎉");
+
         navigate("/dashboard");
       }
     } catch (err) {
@@ -69,7 +79,6 @@ const Login = () => {
 
       toast.error(message);
 
-      // show inline error
       setErrors({
         password: "Invalid email or password",
       });
@@ -98,7 +107,7 @@ const Login = () => {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className={`w-full mt-1 px-4 py-2 border rounded-lg outline-none ${
+                className={`w-full mt-1 px-4 py-2 border rounded-lg ${
                   errors.email
                     ? "border-red-500"
                     : "focus:ring-2 focus:ring-blue-500"
@@ -120,7 +129,7 @@ const Login = () => {
                 value={form.password}
                 onChange={handleChange}
                 placeholder="Enter your password"
-                className={`w-full mt-1 px-4 py-2 border rounded-lg outline-none ${
+                className={`w-full mt-1 px-4 py-2 border rounded-lg ${
                   errors.password
                     ? "border-red-500"
                     : "focus:ring-2 focus:ring-blue-500"

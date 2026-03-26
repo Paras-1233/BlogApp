@@ -1,6 +1,6 @@
 import Blog from "../models/Blog.js";
 
-// CREATE BLOG (FIXED)
+// CREATE BLOG
 export const createBlog = async (req, res) => {
   try {
     const { title, content, image } = req.body;
@@ -9,45 +9,60 @@ export const createBlog = async (req, res) => {
       title,
       content,
       image,
-      user: req.user._id, // 🔥 IMPORTANT
+      user: req.user._id,
     });
 
     res.status(201).json(blog);
   } catch (err) {
-    console.error("CREATE BLOG ERROR:", err); // 👈 debug
+    console.error("CREATE BLOG ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
-// GET ALL BLOGS
+// GET ALL BLOGS (✅ UPDATED)
 export const getBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().sort({ createdAt: -1 });
+    const blogs = await Blog.find()
+      .populate("user", "username name") // blog author
+      .populate("comments.user", "username name") // 🔥 comment username
+      .sort({ createdAt: -1 });
+
     res.json(blogs);
   } catch (err) {
+    console.error("GET BLOGS ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
-// GET SINGLE BLOG
+// GET SINGLE BLOG (✅ UPDATED)
 export const getBlog = async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findById(req.params.id)
+      .populate("user", "username name")
+      .populate("comments.user", "username name");
+
     if (!blog) {
       return res.status(404).json({ message: "Blog not found" });
     }
+
     res.json(blog);
   } catch (err) {
+    console.error("GET BLOG ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
-// GET LOGGED-IN USER BLOGS
+// GET MY BLOGS (✅ UPDATED)
 export const getMyBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find({ user: req.user._id }).sort({ createdAt: -1 });
+    const blogs = await Blog.find({ user: req.user._id })
+      .populate("user", "username name")
+      .populate("comments.user", "username name")
+      .sort({ createdAt: -1 });
+
     res.json(blogs);
   } catch (err) {
+    console.error("GET MY BLOGS ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -56,9 +71,11 @@ export const getMyBlogs = async (req, res) => {
 export const updateBlog = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
+
     if (!blog) {
       return res.status(404).json({ message: "Blog not found" });
     }
+
     if (blog.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not authorized" });
     }
@@ -70,6 +87,7 @@ export const updateBlog = async (req, res) => {
     const updated = await blog.save();
     res.json(updated);
   } catch (err) {
+    console.error("UPDATE BLOG ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -78,15 +96,21 @@ export const updateBlog = async (req, res) => {
 export const deleteBlog = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
+
     if (!blog) {
       return res.status(404).json({ message: "Blog not found" });
     }
+
     if (blog.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not authorized" });
     }
+
     await Blog.findByIdAndDelete(req.params.id);
+
     res.json({ message: "Blog deleted" });
   } catch (err) {
+    console.error("DELETE BLOG ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };
+

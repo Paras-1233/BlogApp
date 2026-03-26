@@ -8,6 +8,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
+    name: "",
     username: "",
     email: "",
     password: "",
@@ -32,6 +33,7 @@ const Register = () => {
   const validate = () => {
     const newErrors = {};
 
+    if (!form.name.trim()) newErrors.name = "Name is required";
     if (!form.username) newErrors.username = "Username is required";
     if (!form.email) newErrors.email = "Email is required";
     if (!form.password) {
@@ -56,7 +58,7 @@ const Register = () => {
       setLoading(true);
 
       const res = await axios.post(
-  "https://blog-backend-wcnx.onrender.com/api/auth/register",
+  "http://localhost:5000/api/auth/register",
   form
 );
       if (res.data?.token) {
@@ -91,6 +93,28 @@ const Register = () => {
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+
+            {/* Name */}
+            <div>
+              <label className="text-sm text-gray-600">Full Name</label>
+              <input
+                name="name"
+                type="text"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Enter your full name"
+                className={`w-full mt-1 px-4 py-2 border rounded-lg outline-none ${
+                  errors.name
+                    ? "border-red-500"
+                    : "focus:ring-2 focus:ring-blue-500"
+                }`}
+              />
+              {errors.name && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.name}
+                </p>
+              )}
+            </div>
 
             {/* Username */}
             <div>

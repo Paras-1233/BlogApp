@@ -5,7 +5,7 @@ import generateToken from "../utils/generateToken.js";
 // REGISTER
 export const registerUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, name, email, password } = req.body;
 
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -17,6 +17,7 @@ export const registerUser = async (req, res) => {
 
     const user = await User.create({
       username,
+      name: name || username, // Use name if provided, otherwise use username
       email,
       password: hashedPassword,
     });
@@ -24,6 +25,7 @@ export const registerUser = async (req, res) => {
     res.status(201).json({
       _id: user._id,
       username: user.username,
+      name: user.name,
       email: user.email,
       token: generateToken(user._id), // ✅ correct
     });
@@ -43,6 +45,7 @@ export const loginUser = async (req, res) => {
       res.json({
         _id: user._id,
         username: user.username, // ✅ FIXED
+        name: user.name || user.username, // Use name if exists, otherwise username
         email: user.email,
         token: generateToken(user._id), // ✅ correct
       });

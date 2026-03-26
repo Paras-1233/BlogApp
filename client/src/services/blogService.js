@@ -1,38 +1,38 @@
 import API from "./api";
 
 // ✅ GET all blogs
-export const getBlogs = () => API.get("api/blogs");
+export const getBlogs = () => API.get("/blogs");
 
 // ✅ CREATE blog
-export const createBlog = (data) => API.post("api/blogs", data);
+export const createBlog = (data) => API.post("/blogs", data);
 
 // ✅ GET single blog
-export const getBlogById = (id) => API.get(`api/blogs/${id}`);
+export const getBlogById = (id) => API.get(`/blogs/${id}`);
 
 // ✅ UPDATE blog
 export const updateBlog = (id, data) =>
-  API.put(`api/blogs/${id}`, data);
+  API.put(`/blogs/${id}`, data);
 
 // ✅ DELETE blog
 export const deleteBlog = (id) =>
-  API.delete(`api/blogs/${id}`);
+  API.delete(`/blogs/${id}`);
 
 // ✅ GET logged-in user's blogs
 export const getMyBlogs = () =>
-  API.get("api/blogs/myblogs");
+  API.get("/blogs/myblogs");
 
 // ❤️ LIKE
 export const toggleLike = (id) =>
-  API.post(`api/blogs/${id}/like`);
+  API.post(`/blogs/${id}/like`);
 
 // 💬 COMMENT
 export const addComment = (id, text) =>
-  API.post(`api/blogs/${id}/comment`, { text });
+  API.post(`/blogs/${id}/comment`, { text });
 
 // ✏️ UPDATE COMMENT
 export const updateComment = (blogId, commentId, text) =>
-  API.put(`api/blogs/${blogId}/comments/${commentId}`, { text });
+  API.put(`/blogs/${blogId}/comments/${commentId}`, { text });
 
 // 🗑 DELETE COMMENT
 export const deleteComment = (blogId, commentId) =>
-  API.delete(`api/blogs/${blogId}/comments/${commentId}`);
+  API.delete(`/blogs/${blogId}/comments/${commentId}`);

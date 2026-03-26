@@ -58,7 +58,7 @@ const Register = () => {
       setLoading(true);
 
       const res = await axios.post(
-  "http://localhost:5000/api/auth/register",
+  "https://blog-backend-wcnx.onrender.com/api/auth/register",
   form
 );
       if (res.data?.token) {

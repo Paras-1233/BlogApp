@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import axios from "axios";
 import toast from "react-hot-toast";
+import API from "../services/api";
+import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth(); // 🔥 from AuthContext
 
   const [form, setForm] = useState({
     email: "",
@@ -48,29 +50,12 @@ const Login = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post(
-        "https://blog-backend-wcnx.onrender.com/api/auth/login",
-        form
-      );
-
-      console.log("LOGIN RESPONSE:", res.data);
+      const res = await API.post("/auth/login", form);
 
       if (res.data?.token) {
-        // ✅ Store token
-        localStorage.setItem("token", res.data.token);
-
-        // 🔥 FIX: Store user correctly
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            _id: res.data._id,
-            username: res.data.username,
-            email: res.data.email,
-          })
-        );
+        login(res.data); // 🔥 global auth handled here
 
         toast.success("Login successful 🎉");
-
         navigate("/dashboard");
       }
     } catch (err) {
@@ -107,7 +92,7 @@ const Login = () => {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className={`w-full mt-1 px-4 py-2 border rounded-lg ${
+                className={`w-full mt-1 px-4 py-2 border rounded-lg outline-none ${
                   errors.email
                     ? "border-red-500"
                     : "focus:ring-2 focus:ring-blue-500"
@@ -129,7 +114,7 @@ const Login = () => {
                 value={form.password}
                 onChange={handleChange}
                 placeholder="Enter your password"
-                className={`w-full mt-1 px-4 py-2 border rounded-lg ${
+                className={`w-full mt-1 px-4 py-2 border rounded-lg outline-none ${
                   errors.password
                     ? "border-red-500"
                     : "focus:ring-2 focus:ring-blue-500"

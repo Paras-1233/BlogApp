@@ -58,7 +58,7 @@ const Register = () => {
       setLoading(true);
 
       const res = await axios.post(
-  "https://blog-backend-wcnx.onrender.com/api/auth/register",
+  "http://localhost:5000/api/auth/register",
   form
 );
       if (res.data?.token) {
@@ -66,7 +66,7 @@ const Register = () => {
       }
 
       toast.success("Registered successfully 🎉");
-      navigate("/dashboard");
+      navigate("/login");
     } catch (err) {
       const message =
         err.response?.data?.message || "Register failed ❌";

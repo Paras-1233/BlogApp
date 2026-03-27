@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import axios from "axios";
 import toast from "react-hot-toast";
+import API from "../services/api";
+import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth(); // 🔥 from AuthContext
 
   const [form, setForm] = useState({
     email: "",
@@ -21,7 +23,6 @@ const Login = () => {
       [e.target.name]: e.target.value,
     }));
 
-    // clear error when typing
     setErrors((prev) => ({
       ...prev,
       [e.target.name]: "",
@@ -49,16 +50,10 @@ const Login = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post(
-        "https://blog-backend-wcnx.onrender.com/api/auth/login",
-        form
-      );
-      if (res.data?.token) {
-        localStorage.setItem("token", res.data.token);
+      const res = await API.post("/auth/login", form);
 
-        if (res.data.user) {
-          localStorage.setItem("user", JSON.stringify(res.data.user));
-        }
+      if (res.data?.token) {
+        login(res.data); // 🔥 global auth handled here
 
         toast.success("Login successful 🎉");
         navigate("/dashboard");
@@ -69,7 +64,6 @@ const Login = () => {
 
       toast.error(message);
 
-      // show inline error
       setErrors({
         password: "Invalid email or password",
       });

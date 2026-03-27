@@ -1,15 +1,15 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth(); // 🔥 use context
 
   const isActive = (path) =>
     location.pathname === path
       ? "text-blue-600 font-semibold"
       : "text-gray-600 hover:text-black";
-
-  const token = localStorage.getItem("token");
 
   return (
     <nav className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
@@ -27,26 +27,22 @@ const Navbar = () => {
         <div className="flex items-center gap-6">
 
           {/* Home */}
-          <button
-            onClick={() => navigate("/")}
-            className={isActive("/")}
-          >
+          <button onClick={() => navigate("/")} className={isActive("/")}>
             Home
           </button>
 
           {/* Dashboard */}
-          {/* Dashboard (only if logged in) */}
-{token && (
-  <button
-    onClick={() => navigate("/dashboard")}
-    className={isActive("/dashboard")}
-  >
-    Dashboard
-  </button>
-)}
+          {user && (
+            <button
+              onClick={() => navigate("/dashboard")}
+              className={isActive("/dashboard")}
+            >
+              Dashboard
+            </button>
+          )}
 
           {/* Profile */}
-          {token && (
+          {user && (
             <button
               onClick={() => navigate("/profile")}
               className="text-gray-600 hover:text-black"
@@ -56,11 +52,10 @@ const Navbar = () => {
           )}
 
           {/* Auth Section */}
-          {token ? (
+          {user ? (
             <button
               onClick={() => {
-                localStorage.removeItem("token");
-                localStorage.removeItem("user");
+                logout(); // 🔥 important
                 navigate("/login");
               }}
               className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
@@ -84,9 +79,7 @@ const Navbar = () => {
               </button>
             </div>
           )}
-
         </div>
-
       </div>
     </nav>
   );

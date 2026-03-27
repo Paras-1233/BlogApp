@@ -10,12 +10,47 @@ API.interceptors.request.use((req) => {
   const token = user?.token;
 
   console.log("SENDING TOKEN:", token);
+// 🔐 Attach token
+API.interceptors.request.use(
+  (req) => {
+    try {
+      let token = localStorage.getItem("token");
 
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
+      // fallback (if stored inside user object)
+      if (!token) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        token = user?.token;
+      }
+
+      if (token) {
+        req.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (error) {
+      console.log("Token error:", error.message);
+    }
+
+    return req;
+  },
+  (error) => Promise.reject(error)
+);
+
+// 🚨 Handle response errors
+API.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error.response?.status === 401) {
+      console.log("Unauthorized - logging out");
+
+      // clear auth
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      // optional redirect
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(error);
   }
-
-  return req;
-});
+);
 
 export default API;

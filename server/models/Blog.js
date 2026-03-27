@@ -18,6 +18,32 @@ const blogSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
+    // ✅ ADD THIS (Likes)
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
+    // ✅ ADD THIS (Comments)
+    comments: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        text: {
+          type: String,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import axios from "axios";
 import toast from "react-hot-toast";
+import API from "../services/api";
+import { useAuth } from "../contexts/AuthContext";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { login } = useAuth(); // 🔥 same as login page
 
   const [form, setForm] = useState({
     name: "",
@@ -23,7 +25,6 @@ const Register = () => {
       [e.target.name]: e.target.value,
     }));
 
-    // clear error while typing
     setErrors((prev) => ({
       ...prev,
       [e.target.name]: "",
@@ -57,26 +58,28 @@ const Register = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post(
-  "https://blog-backend-wcnx.onrender.com/api/auth/register",
-  form
-);
-      if (res.data?.token) {
-        localStorage.setItem("token", res.data.token);
-      }
+      const res = await API.post("/auth/register", form); // ✅ SAME as login style
 
-      toast.success("Registered successfully 🎉");
-      navigate("/login");
+      if (res.data?.token) {
+        login(res.data); // 🔥 store globally (NO localStorage)
+
+        toast.success("Registered successfully 🎉");
+
+        navigate("/dashboard"); // ✅ direct login after register
+      }
     } catch (err) {
       const message =
         err.response?.data?.message || "Register failed ❌";
 
       toast.error(message);
 
-      // show inline error (example: email already exists)
-      setErrors({
-        email: message,
-      });
+      if (message.toLowerCase().includes("username")) {
+  setErrors({ username: message });
+} else if (message.toLowerCase().includes("email")) {
+  setErrors({ email: message });
+} else {
+  toast.error(message);
+}
     } finally {
       setLoading(false);
     }
@@ -85,7 +88,6 @@ const Register = () => {
   return (
     <MainLayout>
       <div className="max-w-md mx-auto mt-16 px-4">
-
         <div className="bg-white shadow-lg rounded-2xl p-6">
 
           <h2 className="text-2xl font-bold text-center mb-6">
@@ -205,7 +207,6 @@ const Register = () => {
           </p>
 
         </div>
-
       </div>
     </MainLayout>
   );

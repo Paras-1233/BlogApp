@@ -7,13 +7,21 @@ export const registerUser = async (req, res) => {
   try {
     const { username, name, email, password } = req.body;
 
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: "User already exists" });
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    const usernameExists = await User.findOne({ username });
+    if (usernameExists) {
+      return res.status(400).json({ message: "Username already taken" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
       username,
@@ -27,13 +35,22 @@ export const registerUser = async (req, res) => {
       username: user.username,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id), // ✅ correct
+      token: generateToken(user._id),
     });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+
+    // 🔥 HANDLE DUPLICATE ERROR
+    if (err.code === 11000) {
+      return res.status(400).json({
+        message: "Username or Email already exists",
+      });
+    }
+
+    res.status(500).json({ message: "Server error" });
   }
 };
-
 // LOGIN
 export const loginUser = async (req, res) => {
   try {

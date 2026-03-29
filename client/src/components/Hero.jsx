@@ -1,3 +1,9 @@
+const colors = [
+  "bg-indigo-500",
+  "bg-purple-500",
+  "bg-pink-500",
+  "bg-blue-500",
+];
 const Hero = ({ navigate }) => {
   return (
     <section className="relative overflow-hidden font-sans">
@@ -22,7 +28,7 @@ const Hero = ({ navigate }) => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 pt-28 pb-24 text-center">
+      <div className="relative z-10 max-w-4xl mx-auto px-6 pt-20 pb-24 text-center">
 
         {/* Label */}
         <div className="flex justify-center mb-6 animate-[fadeUp_0.6s_ease_0.05s_both]">
@@ -102,21 +108,25 @@ const Hero = ({ navigate }) => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-[fadeUp_0.6s_ease_0.54s_both]">
 
           <div className="flex items-center gap-3">
-            <div className="flex -space-x-2.5">
-              {["P", "A", "J", "M"].map((l, i) => (
-                <div
-                  key={i}
-                  className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 ring-2 ring-white flex items-center justify-center text-white text-[11px] font-bold shadow-sm"
-                >
-                  {l}
-                </div>
-              ))}
-            </div>
+  
+  <div className="flex -space-x-2.5">
+    {["P", "A", "J", "M"].map((l, i) => (
+      <div
+        key={i}
+        className={`w-8 h-8 rounded-full ${colors[i % colors.length]} 
+          ring-2 ring-white flex items-center justify-center 
+          text-white text-[11px] font-bold shadow-sm`}
+      >
+        {l}
+      </div>
+    ))}
+  </div>  {/* ✅ CLOSE THIS */}
 
-            <p className="text-[12px] text-slate-500 font-medium">
-              <span className="font-bold text-slate-700">2,400+</span> writers joined
-            </p>
-          </div>
+  <p className="text-[12px] text-slate-500 font-medium">
+    <span className="font-bold text-slate-700">2,400+</span> writers joined
+  </p>
+
+</div>
 
           <span className="hidden sm:block w-px h-4 bg-slate-200" />
 

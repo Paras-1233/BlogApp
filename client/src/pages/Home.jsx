@@ -44,15 +44,40 @@ const Home = () => {
         <Hero navigate={navigate} />
 
         {/* 🔍 SEARCH */}
-        <div className="mb-12">
-          <input
-            type="text"
-            placeholder="🔍 Search blogs..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-5 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none shadow-sm transition"
-          />
-        </div>
+        <div className="mb-12 relative">
+
+  {/* 🔍 Modern Icon */}
+  <svg
+    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <circle
+      cx="11"
+      cy="11"
+      r="7"
+      stroke="currentColor"
+      strokeWidth="1.8"
+    />
+    <path
+      d="M20 20L16.65 16.65"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+  </svg>
+
+  <input
+    type="text"
+    placeholder="Search blogs..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="w-full pl-12 pr-5 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none shadow-sm transition"
+  />
+
+</div>
 
         {/* BLOG SECTION */}
         <div id="blogs" className="mt-16">

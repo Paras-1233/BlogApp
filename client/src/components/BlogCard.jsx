@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toggleLike } from "../services/blogService";
+import { Heart,MessageCircle } from "lucide-react";
+
+
 
 /* ─────────────────────────────────────────────
    Helpers
@@ -19,9 +22,15 @@ const CATEGORY_PALETTE = {
 };
 
 const AVATAR_GRADIENTS = [
-  "from-blue-500 to-indigo-500",
-  "from-indigo-500 to-purple-500",
-  "from-blue-600 to-purple-600",
+  
+
+  "from-pink-500 to-rose-500",
+  "from-green-400 to-emerald-500",
+  "from-yellow-400 to-orange-500",
+  "from-cyan-500 to-blue-500",
+  "from-fuchsia-500 to-purple-600",
+  "from-red-500 to-pink-500",
+  "from-teal-400 to-cyan-500",
 ];
 
 function categoryStyle(tag) {
@@ -226,26 +235,33 @@ const BlogCard = ({ blog, refreshBlogs }) => {
               <div className="flex items-center gap-3 shrink-0">
 
                 {/* Like */}
-                <button
-                  onClick={handleLike}
-                  aria-label="Like"
-                  className={`
-                    flex items-center gap-1 text-[12px] font-medium
-                    transition-colors duration-150 select-none
-                   ${isLiked ? "text-rose-500" : "text-slate-400 hover:text-rose-500"}
-                  `}
-                >
-                  <span className={likeAnim ? "bc-pop inline-block" : "inline-block"}>
-                    {isLiked ? "❤️" : "🤍"}
-                  </span>
-                  <span>{blog.likes?.length || 0}</span>
-                </button>
+                {/* Like */}
+<button
+  onClick={handleLike}
+  aria-label="Like"
+  className={`
+    flex items-center gap-1 text-sm font-medium
+    transition-all duration-150 select-none
+    ${isLiked ? "text-rose-500" : "text-slate-400 hover:text-rose-500"}
+  `}
+>
+  <Heart
+    className={`
+      w-5 h-5 transition-all duration-200
+      hover:scale-110 active:scale-90
+      ${likeAnim ? "bc-pop" : ""}
+    `}
+    fill={isLiked ? "currentColor" : "none"}   // 🔥 outline → fill
+    stroke="currentColor"
+  />
+  <span>{blog.likes?.length || 0}</span>
+</button>
 
-                {/* Comments */}
-                <div className="flex items-center gap-1 text-[12px] text-slate-400 font-medium">
-                  <span>💬</span>
-                  <span>{blog.comments?.length || 0}</span>
-                </div>
+{/* Comments */}
+<div className="flex items-center gap-1 text-sm text-slate-400 font-medium">
+  <MessageCircle className="w-5 h-5" />
+  <span>{blog.comments?.length || 0}</span>
+</div>
 
                 {/* Read more */}
                 <span className="text-[12px] font-semiboldtext-indigo-600 group-hover:text-indigo-700 transition-colors duration-150 flex items-center gap-0.5">

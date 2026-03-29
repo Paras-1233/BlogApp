@@ -19,11 +19,9 @@ import {
 ───────────────────────────────────────────── */
 
 const AUTHOR_GRADIENTS = [
-  "from-violet-500 to-indigo-500",
-  "from-rose-500 to-pink-500",
-  "from-amber-400 to-orange-500",
-  "from-emerald-400 to-teal-500",
-  "from-sky-400 to-blue-500",
+ "from-blue-500 to-indigo-500",
+  "from-indigo-500 to-purple-500",
+  "from-blue-600 to-purple-600",
 ];
 
 const TAG_PALETTE = [

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import BlogCard from "../components/BlogCard";
 import { getBlogs } from "../services/blogService";
-import Sidebar from "../components/Sidebar";
+import RightSidebar from "../components/RightSiderbar";
 import Hero from "../components/Hero";
 
 const Home = () => {
@@ -38,40 +38,51 @@ const Home = () => {
 
   return (
     <MainLayout>
-      <div className="max-w-6xl mx-auto px-4 py-10">
-          
-          {/* HERO */}
+      <div className="max-w-7xl mx-auto px-6 py-10">
+
+        {/* HERO */}
         <Hero navigate={navigate} />
 
         {/* 🔍 SEARCH */}
-        <div className="mb-10">
+        <div className="mb-12">
           <input
             type="text"
             placeholder="🔍 Search blogs..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-5 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
+            className="w-full px-5 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none shadow-sm transition"
           />
         </div>
 
         {/* BLOG SECTION */}
-        <div id="blogs">
-          <h2 className="text-2xl font-semibold mb-6">Latest Blogs</h2>
+        <div id="blogs" className="mt-16">
+          <h2 className="text-2xl font-semibold mb-8">Latest Blogs</h2>
 
-          {loading && <p className="text-center text-gray-500">Loading...</p>}
-          {error && <p className="text-center text-red-500">{error}</p>}
+          {/* Loading */}
+          {loading && (
+            <p className="text-center text-gray-400 text-sm">
+              Loading blogs...
+            </p>
+          )}
 
+          {/* Error */}
+          {error && (
+            <p className="text-center text-red-500 text-sm">{error}</p>
+          )}
+
+          {/* Empty */}
           {!loading && filteredBlogs.length === 0 && (
-            <p className="text-center text-gray-500">
+            <p className="text-center text-gray-500 text-sm">
               No blogs found for "{search}"
             </p>
           )}
 
+          {/* Content */}
           {!loading && filteredBlogs.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10 items-start">
 
               {/* LEFT - BLOG GRID */}
-              <div className="md:col-span-2 grid sm:grid-cols-2 gap-6">
+              <div className="grid sm:grid-cols-2 gap-8 auto-rows-fr">
                 {filteredBlogs.map((blog) => (
                   <BlogCard
                     key={blog._id}
@@ -81,7 +92,8 @@ const Home = () => {
                 ))}
               </div>
 
-              <Sidebar blogs={blogs} setSearch={setSearch} />
+              {/* RIGHT SIDEBAR */}
+              <RightSidebar blogs={blogs} setSearch={setSearch} />
             </div>
           )}
         </div>

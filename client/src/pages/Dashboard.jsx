@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getMyBlogs, deleteBlog } from "../services/blogService";
 import { useAuth } from "../contexts/AuthContext";
 
+
 // ─── Skeleton loader ───────────────────────────────────────────────────────────
 const SkeletonCard = () => (
   <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
@@ -299,6 +300,7 @@ const Dashboard = () => {
 
   return (
     <MainLayout>
+      
       {/* Fade-in wrapper */}
       <div
         className={`max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10 transition-all duration-500 ${

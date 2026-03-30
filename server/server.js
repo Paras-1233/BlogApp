@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import blogRoutes from "./routes/blogRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.post("/test", (req, res) => {
 app.use("/api/blogs", blogRoutes);
 
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)

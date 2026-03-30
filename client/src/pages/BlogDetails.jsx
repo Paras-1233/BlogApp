@@ -11,8 +11,6 @@ import {
 
 import { Heart ,MessageCircle} from "lucide-react";
 import Navbar from "../components/Navbar";
-const CURRENT_USER = JSON.parse(localStorage.getItem("user"));
-
 // ─── Helpers ────────────────────────────────────────────────────────────────
 function timeAgo(dateStr) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -94,12 +92,31 @@ function Hero({ blog }) {
 }
 
 // ─── Author ───────────────────────────────────────────────────────────────────
-function Author({ blog }) {
+function Author({ blog, currentUser }) {
+  const blogUser = blog.user || {};
+  const isCurrent = currentUser && blogUser._id && currentUser._id === blogUser._id;
+
+  const displayName = isCurrent
+    ? currentUser.name || currentUser.username || "Anonymous"
+    : blogUser.name || blogUser.username || blogUser.email || "Anonymous";
+
+  const displayAvatar = isCurrent
+    ? currentUser.avatar || blogUser.avatar
+    : blogUser.avatar;
+
   return (
     <div className="flex items-center gap-3 mb-8">
-      <Avatar name={blog.user?.username} size="lg" color="indigo" />
+      {displayAvatar ? (
+        <img
+          src={displayAvatar}
+          alt={displayName}
+          className="w-12 h-12 rounded-full object-cover"
+        />
+      ) : (
+        <Avatar name={displayName} size="lg" color="indigo" />
+      )}
       <div>
-        <p className="font-semibold text-slate-800 text-sm">{blog.user?.username || "Anonymous"}</p>
+        <p className="font-semibold text-slate-800 text-sm">{displayName}</p>
         <p className="text-slate-400 text-xs mt-0.5">
           {formatDate(blog.createdAt)} · {blog.readTime} min read
         </p>
@@ -252,7 +269,7 @@ function BlogContent({ content }) {
 }
 
 // ─── Comments ─────────────────────────────────────────────────────────────────
-function CommentItem({ c, userId, onUpdate, onDelete }) {
+function CommentItem({ c, userId, onUpdate, onDelete, currentUser }) {
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState(c.text);
   const isOwner =
@@ -260,12 +277,28 @@ function CommentItem({ c, userId, onUpdate, onDelete }) {
   const colors = ["indigo", "violet", "emerald", "amber", "rose"];
   const color = colors[c.user?.username?.charCodeAt(0) % colors.length] || "indigo";
 
+  const isCurrentUserComment = currentUser && c.user?._id && currentUser._id === c.user._id;
+  const displayName = isCurrentUserComment
+    ? currentUser.name || currentUser.username || c.user?.username || "User"
+    : c.user?.name || c.user?.username || "User";
+  const displayAvatar = isCurrentUserComment
+    ? currentUser.avatar || c.user?.avatar
+    : c.user?.avatar;
+
   return (
     <div className="flex gap-3 group">
-      <Avatar name={c.user?.username} size="sm" color={color} />
+      {displayAvatar ? (
+        <img
+          src={displayAvatar}
+          alt={displayName}
+          className="w-8 h-8 rounded-full object-cover"
+        />
+      ) : (
+        <Avatar name={displayName} size="sm" color={color} />
+      )}
       <div className="flex-1 bg-slate-50 rounded-xl px-4 py-3 border border-slate-100 hover:border-slate-200 transition-colors duration-200">
         <div className="flex items-center justify-between mb-1">
-          <span className="font-semibold text-slate-800 text-sm">{c.user?.username || "User"}</span>
+          <span className="font-semibold text-slate-800 text-sm">{displayName}</span>
           <span className="text-slate-400 text-xs">{timeAgo(c.createdAt || new Date())}</span>
         </div>
 
@@ -318,7 +351,7 @@ function CommentItem({ c, userId, onUpdate, onDelete }) {
   );
 }
 
-function CommentsSection({ blog, userId, commentsRef, onAddComment, onUpdateComment, onDeleteComment }) {
+function CommentsSection({ blog, userId, commentsRef, onAddComment, onUpdateComment, onDeleteComment, currentUser }) {
   const [comment, setComment] = useState("");
   const [posting, setPosting] = useState(false);
 
@@ -339,7 +372,15 @@ function CommentsSection({ blog, userId, commentsRef, onAddComment, onUpdateComm
 
       {/* Input */}
       <div className="flex gap-3 mb-8">
-        <Avatar name={CURRENT_USER.username} size="sm" color="indigo" />
+        {currentUser?.avatar ? (
+          <img
+            src={currentUser.avatar}
+            alt={currentUser?.username}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        ) : (
+          <Avatar name={currentUser?.username} size="sm" color="indigo" />
+        )}
         <div className="flex-1 relative">
           <input
             type="text"
@@ -368,6 +409,7 @@ function CommentsSection({ blog, userId, commentsRef, onAddComment, onUpdateComm
             userId={userId}
             onUpdate={onUpdateComment}
             onDelete={onDeleteComment}
+            currentUser={currentUser}
           />
         ))}
       </div>
@@ -384,11 +426,16 @@ const BlogDetails = () => {
   const [loading, setLoading] = useState(true);
   const commentsRef = useRef(null);
 
-  const user = CURRENT_USER;
-  const userId = user?._id;
+  const [currentUser, setCurrentUser] = useState(() => JSON.parse(localStorage.getItem("user") || "{}"));
+  const userId = currentUser?._id;
 
- 
-    // Simulate fetch
+  useEffect(() => {
+    const handleStorage = () => setCurrentUser(JSON.parse(localStorage.getItem("user") || "{}"));
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  // Simulate fetch
 useEffect(() => {
   const fetchBlog = async () => {
     try {
@@ -533,7 +580,7 @@ const handleDeleteComment = async (commentId) => {
         )}
 
         {/* Author */}
-        <Author blog={blog} />
+        <Author blog={blog} currentUser={currentUser} />
 
         {/* Inline actions (non-sticky) */}
         <div className="flex items-center gap-4 mb-8 pb-8 border-b border-slate-100">
@@ -587,6 +634,7 @@ const handleDeleteComment = async (commentId) => {
           onAddComment={handleAddComment}
           onUpdateComment={handleUpdateComment}
           onDeleteComment={handleDeleteComment}
+          currentUser={currentUser}
         />
 
         {/* Footer spacer */}

@@ -1,57 +1,81 @@
+import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
+import logo from "../assets/logo.png";
+
 const Footer = () => {
   return (
-    <footer className="mt-16 border-t pt-10 pb-6 bg-white/70 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-4">
+    <footer className="mt-20 bg-gray-50 border-t">
+      <div className="max-w-6xl mx-auto px-6 py-12">
 
-        {/* TOP SECTION */}
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+        {/* MAIN GRID */}
+        <div className="grid md:grid-cols-[1.6fr_1fr_1fr_1.2fr] gap-10">
 
           {/* BRAND */}
-          <div>
-            <h2 className="text-xl font-bold text-gray-800 mb-3">
-              BlogiFy
-            </h2>
-            <p className="text-sm text-gray-500">
-              A calm space for writers and readers. Share your ideas with the world.
+          <div className="space-y-4">
+            <img
+              src={logo}
+              alt="BlogiFy"
+              className="w-40 object-contain"
+            />
+
+            <p className="text-sm text-gray-600 leading-relaxed max-w-xs">
+              A calm space for writers and readers. Share your ideas,
+              stories, and creativity with the world.
             </p>
+
+            <div className="flex gap-4 text-gray-500">
+              <FaTwitter className="hover:text-black hover:scale-110 transition duration-200 cursor-pointer" />
+              <FaLinkedin className="hover:text-black hover:scale-110 transition duration-200 cursor-pointer" />
+              <FaGithub className="hover:text-black hover:scale-110 transition duration-200 cursor-pointer" />
+            </div>
           </div>
 
-          {/* LINKS */}
+          {/* EXPLORE */}
           <div>
-            <h3 className="font-semibold mb-3">Explore</h3>
+            <h3 className="font-semibold mb-4 text-gray-900">Explore</h3>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li className="hover:text-black cursor-pointer">Home</li>
-              <li className="hover:text-black cursor-pointer">Blogs</li>
-              <li className="hover:text-black cursor-pointer">Dashboard</li>
+              <li className="hover:text-black hover:translate-x-1 transition cursor-pointer">Home</li>
+              <li className="hover:text-black hover:translate-x-1 transition cursor-pointer">Blogs</li>
+              <li className="hover:text-black hover:translate-x-1 transition cursor-pointer">Dashboard</li>
             </ul>
           </div>
 
           {/* RESOURCES */}
           <div>
-            <h3 className="font-semibold mb-3">Resources</h3>
+            <h3 className="font-semibold mb-4 text-gray-900">Resources</h3>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li className="hover:text-black cursor-pointer">Help Center</li>
-              <li className="hover:text-black cursor-pointer">Privacy Policy</li>
-              <li className="hover:text-black cursor-pointer">Terms</li>
+              <li className="hover:text-black hover:translate-x-1 transition cursor-pointer">Help Center</li>
+              <li className="hover:text-black hover:translate-x-1 transition cursor-pointer">Privacy Policy</li>
+              <li className="hover:text-black hover:translate-x-1 transition cursor-pointer">Terms</li>
             </ul>
           </div>
 
-          {/* SOCIAL */}
+          {/* NEWSLETTER */}
           <div>
-            <h3 className="font-semibold mb-3">Connect</h3>
-            <div className="flex gap-4 text-gray-600 text-sm">
-              <span className="hover:text-black cursor-pointer">Twitter</span>
-              <span className="hover:text-black cursor-pointer">LinkedIn</span>
-              <span className="hover:text-black cursor-pointer">GitHub</span>
+            <h3 className="font-semibold mb-3 text-gray-900">Stay Updated</h3>
+            <p className="text-sm text-gray-600 mb-3">
+              Get latest blogs directly in your inbox.
+            </p>
+
+            <div className="flex rounded-lg overflow-hidden border max-w-sm">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="px-3 py-2 w-full text-sm outline-none"
+              />
+              <button className="bg-black text-white px-4 text-sm whitespace-nowrap hover:bg-gray-800 transition">
+                Subscribe
+              </button>
             </div>
           </div>
 
         </div>
 
         {/* BOTTOM */}
-        <div className="border-t pt-4 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} Digital Curator. All rights reserved.
+        <div className="border-t mt-10 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-3">
+          <p>© {new Date().getFullYear()} BlogiFy. All rights reserved.</p>
+          <p className="text-xs">Built with MERN ⚡ by Paras</p>
         </div>
+
       </div>
     </footer>
   );

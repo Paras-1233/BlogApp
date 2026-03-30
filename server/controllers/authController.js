@@ -35,6 +35,9 @@ export const registerUser = async (req, res) => {
       username: user.username,
       name: user.name,
       email: user.email,
+      avatar: user.avatar || "",
+      bio: user.bio || "",
+      role: user.role || "",
       token: generateToken(user._id),
     });
 
@@ -61,10 +64,13 @@ export const loginUser = async (req, res) => {
     if (user && (await bcrypt.compare(password, user.password))) {
       res.json({
         _id: user._id,
-        username: user.username, // ✅ FIXED
-        name: user.name || user.username, // Use name if exists, otherwise username
+        username: user.username,
+        name: user.name || user.username,
         email: user.email,
-        token: generateToken(user._id), // ✅ correct
+        avatar: user.avatar || "",
+        bio: user.bio || "",
+        role: user.role || "",
+        token: generateToken(user._id),
       });
     } else {
       res.status(401).json({ message: "Invalid email or password" });

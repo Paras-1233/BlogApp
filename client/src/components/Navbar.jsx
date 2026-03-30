@@ -49,7 +49,8 @@ const Navbar = () => {
     setDropdownOpen(false);
   };
 
-  const avatarInitial = user?.username?.charAt(0).toUpperCase();
+  const displayName = user?.name || user?.username || "User";
+  const avatarInitial = displayName?.charAt(0).toUpperCase();
 
   return (
     <>
@@ -105,11 +106,19 @@ className="h-28 w-auto object-contain"
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-gray-300 transition-all duration-150"
                 >
-                  <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
-                    {avatarInitial}
-                  </div>
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={displayName}
+                      className="w-7 h-7 rounded-full object-cover shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                      {avatarInitial}
+                    </div>
+                  )}
                   <span className="text-sm font-medium text-gray-700 max-w-[96px] truncate">
-                    {user?.username}
+                    {displayName}
                   </span>
                   <svg
                     className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
@@ -125,7 +134,7 @@ className="h-28 w-auto object-contain"
                     {/* User info */}
                     <div className="px-4 py-2.5 border-b border-gray-50">
                       <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Signed in as</p>
-                      <p className="text-sm font-semibold text-gray-800 truncate mt-0.5">{user?.username}</p>
+                      <p className="text-sm font-semibold text-gray-800 truncate mt-0.5">{displayName}</p>
                     </div>
 
                     {/* Menu items */}

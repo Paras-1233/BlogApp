@@ -97,10 +97,21 @@ const BlogCard = ({ blog, refreshBlogs }) => {
     return likeId?.toString() === userId?.toString();
   });
 
-  const authorName =
+  const authorNameFromBlog =
     blog.user?.name || blog.user?.username || blog.user?.email || "Anonymous";
+  const authorAvatar = blog.user?.avatar;
 
-  const tag     = blog.category || blog.tags?.[0] || null;
+  const isCurrentUserAuthor = userId && blog.user?._id === userId;
+
+  const displayAuthorName = isCurrentUserAuthor
+    ? user?.name || user?.username || authorNameFromBlog
+    : authorNameFromBlog;
+
+  const displayAvatar = isCurrentUserAuthor
+    ? user?.avatar || authorAvatar
+    : authorAvatar;
+
+  const tag = blog.category || blog.tags?.[0] || null;
   const minRead = readTime(blog.content);
 
   /* handlers */
@@ -213,17 +224,24 @@ const BlogCard = ({ blog, refreshBlogs }) => {
 
               {/* Author */}
               <div className="flex items-center gap-2 min-w-0">
+  {displayAvatar ? (
+  <img
+    src={displayAvatar}
+    alt={displayAuthorName}
+    className="w-8 h-8 rounded-full object-cover shadow-sm"
+  />
+) : (
   <div
     className={`w-8 h-8 rounded-full bg-gradient-to-br ${avatarGradient(
-      authorName
+      displayAuthorName
     )} flex items-center justify-center text-white text-xs font-semibold shadow-sm`}
   >
-    {authorName[0].toUpperCase()}
+    {displayAuthorName[0]?.toUpperCase()}
   </div>
-
+)}
   <div className="flex flex-col gap-1 min-w-0">
     <p className="text-sm font-medium text-slate-800 truncate">
-      {authorName}
+      {displayAuthorName}
     </p>
     <p className="text-xs text-slate-400">
       {formatDate(blog.createdAt)}

@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     },
     name: {
       type: String,
+      default: "",
     },
     email: {
       type: String,
@@ -18,6 +19,20 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+    },
+
+    //NEW FIELDS
+    avatar: {
+      type: String,
+      default: "",
+    },
+    bio: {
+      type: String,
+      default: "No bio yet.",
+    },
+    role: {
+      type: String,
+      default: "Author",
     },
   },
   { timestamps: true }

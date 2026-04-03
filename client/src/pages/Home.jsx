@@ -8,11 +8,13 @@ import Hero from "../components/Hero";
 
 const Home = () => {
   const navigate = useNavigate();
+  const INITIAL_VISIBLE_BLOGS = 4;
 
   const [blogs, setBlogs] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_BLOGS);
 
   useEffect(() => {
     fetchBlogs();
@@ -35,10 +37,15 @@ const Home = () => {
   const filteredBlogs = blogs.filter((blog) =>
     (blog.title || "").toLowerCase().includes(search.toLowerCase())
   );
+  const visibleBlogs = filteredBlogs.slice(0, visibleCount);
+
+  useEffect(() => {
+    setVisibleCount(INITIAL_VISIBLE_BLOGS);
+  }, [search]);
 
   return (
     <MainLayout>
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="mx-auto w-full max-w-[1380px] px-4 sm:px-6 py-10">
 
         {/* HERO */}
         <Hero navigate={navigate} />
@@ -104,17 +111,49 @@ const Home = () => {
 
           {/* Content */}
           {!loading && filteredBlogs.length > 0 && (
-            <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10 items-start">
+            <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1.7fr)_360px] gap-8 xl:gap-10 items-start">
 
               {/* LEFT - BLOG GRID */}
-              <div className="grid sm:grid-cols-2 gap-8 auto-rows-fr">
-                {filteredBlogs.map((blog) => (
-                  <BlogCard
-                    key={blog._id}
-                    blog={blog}
-                    refreshBlogs={fetchBlogs}
-                  />
-                ))}
+              <div>
+                <div className="grid sm:grid-cols-2 gap-8 auto-rows-fr">
+                  {visibleBlogs.map((blog) => (
+                    <BlogCard
+                      key={blog._id}
+                      blog={blog}
+                      refreshBlogs={fetchBlogs}
+                    />
+                  ))}
+                </div>
+
+                {filteredBlogs.length > visibleCount && (
+                  <div className="mt-10 rounded-[28px] border border-slate-200 bg-white/90 px-6 py-7 shadow-[0_12px_34px_rgba(15,23,42,0.07)]">
+                    <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-600">
+                          Keep Reading
+                        </p>
+                        <h3 className="mt-2 text-xl font-semibold text-slate-900">
+                          More stories are waiting below the fold.
+                        </h3>
+                        <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500">
+                          Showing {visibleCount} of {filteredBlogs.length} posts so the
+                          feed stays easier to scan.
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() =>
+                          setVisibleCount((prev) =>
+                            Math.min(prev + INITIAL_VISIBLE_BLOGS, filteredBlogs.length)
+                          )
+                        }
+                        className="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-800"
+                      >
+                        Load More Stories
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* RIGHT SIDEBAR */}

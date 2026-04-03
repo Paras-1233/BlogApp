@@ -1,11 +1,12 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+
 const MainLayout = ({ children }) => {
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
-      {children}
-      <Footer /> {/* Add Footer here so it appears on all pages */}
+      <main className="flex-1">{children}</main>
+      <Footer />
     </div>
   );
 };

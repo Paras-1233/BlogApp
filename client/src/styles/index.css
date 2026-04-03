@@ -21,3 +21,18 @@
 body {
   @apply bg-gray-50 dark:bg-gray-950 transition-colors duration-300;
 }
+
+.app-toast {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.app-toast-success {
+  border-color: #bbf7d0 !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%) !important;
+}
+
+.app-toast-error {
+  border-color: #fecaca !important;
+  background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%) !important;
+}

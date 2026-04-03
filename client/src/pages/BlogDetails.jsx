@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import {
   addComment,
   getBlogById,
+  incrementBlogView,
   toggleLike,
   deleteComment,
   updateComment,
@@ -455,6 +456,34 @@ useEffect(() => {
   };
 
   fetchBlog();
+}, [id]);
+
+useEffect(() => {
+  if (!id) return;
+
+  const storageKey = `blog-viewed-${id}`;
+  const hasViewed = sessionStorage.getItem(storageKey);
+
+  if (hasViewed) return;
+
+  const registerView = async () => {
+    try {
+      await incrementBlogView(id);
+      sessionStorage.setItem(storageKey, "true");
+      setBlog((prev) =>
+        prev
+          ? {
+              ...prev,
+              views: (prev.views || 0) + 1,
+            }
+          : prev
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  registerView();
 }, [id]);
 
   const isLiked = blog?.likes?.some((lid) => {

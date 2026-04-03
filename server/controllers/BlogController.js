@@ -52,6 +52,27 @@ export const getBlog = async (req, res) => {
   }
 };
 
+export const incrementBlogView = async (req, res) => {
+  try {
+    const blog = await Blog.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { views: 1 } },
+      { new: true }
+    )
+      .populate("user", "username name avatar")
+      .populate("comments.user", "username name avatar");
+
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+
+    res.json({ views: blog.views });
+  } catch (err) {
+    console.error("INCREMENT VIEW ERROR:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // GET MY BLOGS (✅ UPDATED)
 export const getMyBlogs = async (req, res) => {
   try {

@@ -9,6 +9,8 @@ export const createBlog = (data) => API.post("/blogs", data);
 // ✅ GET single blog
 export const getBlogById = (id) => API.get(`/blogs/${id}`);
 
+export const incrementBlogView = (id) => API.post(`/blogs/${id}/view`);
+
 // ✅ UPDATE blog
 export const updateBlog = (id, data) =>
   API.put(`/blogs/${id}`, data);

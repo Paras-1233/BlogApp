@@ -4,6 +4,7 @@ import {
   getBlogs,
   getBlog,
   getMyBlogs,
+  incrementBlogView,
   updateBlog,
   deleteBlog,
 } from "../controllers/BlogController.js";
@@ -20,6 +21,7 @@ router.post("/", protect, createBlog);
 router.get("/", getBlogs);
 router.get("/myblogs", protect, getMyBlogs);
 router.get("/:id", getBlog);
+router.post("/:id/view", incrementBlogView);
 
 // 🔐 PROTECTED
 router.put("/:id", protect, updateBlog);

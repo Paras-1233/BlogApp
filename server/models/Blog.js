@@ -13,6 +13,10 @@ const blogSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    views: {
+      type: Number,
+      default: 0,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

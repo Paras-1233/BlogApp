@@ -84,7 +84,7 @@ export const BlogCardSkeleton = () => (
 /* ─────────────────────────────────────────────
    BlogCard
 ───────────────────────────────────────────── */
-const BlogCard = ({ blog, refreshBlogs }) => {
+const BlogCard = ({ blog, refreshBlogs, onOpenBlog }) => {
   const navigate = useNavigate();
   const [imgLoaded, setImgLoaded] = useState(false);
   const [likeAnim, setLikeAnim] = useState(false);
@@ -127,7 +127,14 @@ const BlogCard = ({ blog, refreshBlogs }) => {
     }
   };
 
-  const handleNavigate = () => navigate(`/blog/${blog._id}`);
+  const handleNavigate = () => {
+    if (onOpenBlog) {
+      onOpenBlog(blog);
+      return;
+    }
+
+    navigate(`/blog/${blog._id}`);
+  };
 
   /* ── render ── */
   return (

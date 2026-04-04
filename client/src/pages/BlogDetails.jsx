@@ -12,6 +12,8 @@ import {
 
 import { Heart ,MessageCircle} from "lucide-react";
 import Navbar from "../components/Navbar";
+import Login from "./Login";
+import { useAuth } from "../contexts/AuthContext";
 // ─── Helpers ────────────────────────────────────────────────────────────────
 function timeAgo(dateStr) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -422,6 +424,7 @@ function CommentsSection({ blog, userId, commentsRef, onAddComment, onUpdateComm
 const BlogDetails = () => {
   // Simulate useParams
  const { id } = useParams();
+  const { user, loading: authLoading } = useAuth();
 
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -438,6 +441,11 @@ const BlogDetails = () => {
 
   // Simulate fetch
 useEffect(() => {
+  if (!user || !id) {
+    setLoading(false);
+    return;
+  }
+
   const fetchBlog = async () => {
     try {
       const res = await getBlogById(id);
@@ -456,10 +464,10 @@ useEffect(() => {
   };
 
   fetchBlog();
-}, [id]);
+}, [id, user]);
 
 useEffect(() => {
-  if (!id) return;
+  if (!user || !id) return;
 
   const storageKey = `blog-viewed-${id}`;
   const hasViewed = sessionStorage.getItem(storageKey);
@@ -484,7 +492,7 @@ useEffect(() => {
   };
 
   registerView();
-}, [id]);
+}, [id, user]);
 
   const isLiked = blog?.likes?.some((lid) => {
     const likeId = typeof lid === "object" ? lid._id : lid;
@@ -570,6 +578,14 @@ const handleDeleteComment = async (commentId) => {
     console.error(err);
   }
 };
+
+  if (authLoading) {
+    return null;
+  }
+
+  if (!user) {
+    return <Login />;
+  }
 
   if (loading) {
     return (

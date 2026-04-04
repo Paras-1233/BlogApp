@@ -21,6 +21,7 @@ const EditBlog = () => {
   const [error, setError] = useState("");
   const [imageError, setImageError] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [manualImageUrl, setManualImageUrl] = useState("");
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -35,6 +36,7 @@ const EditBlog = () => {
           image: data.image || "",
           content: data.content || "",
         });
+        setManualImageUrl("");
       } catch (err) {
         console.error(err);
         setError("We couldn't load this post right now.");
@@ -51,7 +53,11 @@ const EditBlog = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "title" && value.length > TITLE_MAX) return;
-    if (name === "image") setImageError(false);
+
+    if (name === "image") {
+      setImageError(false);
+      setManualImageUrl(value);
+    }
 
     setForm((prev) => ({
       ...prev,
@@ -76,6 +82,7 @@ const EditBlog = () => {
         ...prev,
         image: imageUrl,
       }));
+      setManualImageUrl("");
 
       toast.success("Cover image uploaded.", {
         id: "edit-blog-image-upload",
@@ -289,9 +296,12 @@ const EditBlog = () => {
                 <div className="mt-3">
                   <ImageUpload
                     imagePreview={imagePreview}
-                    setImagePreview={(value) =>
-                      setForm((prev) => ({ ...prev, image: value }))
-                    }
+                    setImagePreview={(value) => {
+                      setForm((prev) => ({ ...prev, image: value }));
+                      if (!value) {
+                        setManualImageUrl("");
+                      }
+                    }}
                     setForm={setForm}
                     handleImageFile={handleImageFile}
                     handleDrop={handleDrop}
@@ -311,7 +321,7 @@ const EditBlog = () => {
                     id="image"
                     name="image"
                     type="url"
-                    value={form.image}
+                    value={manualImageUrl}
                     onChange={handleChange}
                     placeholder="https://example.com/cover-image.jpg"
                     className="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
